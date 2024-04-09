@@ -1,0 +1,144 @@
+CREATE DATABASE Course 
+CREATE TABLE Users
+(
+    ID INT,
+    [Name] VARCHAR(10),
+    Surname VARCHAR(15),
+    Age INT,
+    Email VARCHAR(20),
+    IsDeleted BIT
+)
+
+CREATE TABLE Educations 
+(
+    ID INT,
+    [Name] VARCHAR(40)
+)
+
+CREATE TABLE Teachers 
+(
+    ID INT,
+    Fullname VARCHAR(30),
+    Age INT,
+    Email VARCHAR(20),
+    [Address] VARCHAR(100),
+    IsDeleted BIT
+)
+
+INSERT INTO Users VALUES
+(1010, 'Arzu', 'Farajova', 24, 'arzu@gmail.com', 1),
+(1011, 'Roya', 'Mammadli', 30, 'roya@gmail.com', 0),
+(1012, 'Pera', 'Andio', 26, 'pera@gmail.com', 1)
+
+
+INSERT INTO Educations VALUES
+(2010, 'Computer Science'),
+(2011, 'Mathematics')
+
+INSERT INTO Teachers VALUES
+(3010, 'Sema Nuriyeva', 40, 'sema@gmail.com', 'street 10', 1),
+(3011, 'Lale Abiyeva', 35, 'lale@gmail.com', 'street 20', 0)
+
+SELECT * FROM Users WHERE Age >20
+
+SELECT FullName, Age, [Address] FROM Teachers WHERE IsDeleted = 1
+
+SELECT COUNT(*) FROM Teachers WHERE Age>30
+
+CREATE TABLE Employee 
+(
+    ID int PRIMARY KEY IDENTITY ,
+    Fullname VARCHAR (255) NOT NULL,
+    Age int NOT NULL CHECK (Age > 0),
+    Email VARCHAR (50) UNIQUE NOT NULL, 
+    Salary DECIMAL(8,2) NOT NULL CHECK (Salary BETWEEN 300 AND 2000)
+)
+
+INSERT INTO Employee (Fullname, Age, Email, Salary)
+VALUES
+('Vica Luce', 25, 'vica@gmail.com', 1500.50),
+('Bob Lee', 28, 'bob@gmail.com', 1800.75),
+('Eliza Kostyk', 35, 'elizak@gmail.com.com', 2000)
+
+SELECT * FROM Employee
+
+--OneToOne
+
+CREATE TABLE Students
+(
+  ID INT PRIMARY KEY IDENTITY,
+  FullName VARCHAR (30)
+)
+
+CREATE TABLE Course
+(
+    ID INT PRIMARY KEY IDENTITY,
+    [Name] VARCHAR(40) UNIQUE NOT NULL,
+    StudentID INT FOREIGN KEY REFERENCES Students(ID) 
+)
+
+INSERT INTO Students (FullName) VALUES ('Arzu')
+INSERT INTO Students (FullName) VALUES ('Roya')
+INSERT INTO Course ([Name]) VALUES ('Computer Science')
+INSERT INTO Course ([Name]) VALUES ('Mathematics')
+
+--OneToMany
+
+CREATE TABLE Professors
+(
+    ID INT PRIMARY KEY IDENTITY,
+    [Name] VARCHAR (10)
+)
+
+CREATE TABLE Lessons
+(
+    ID INT PRIMARY KEY IDENTITY,
+    [Name] VARCHAR(10),
+    ProfessorId INT,
+    FOREIGN KEY (ProfessorId) REFERENCES Professors (ID)
+)
+
+INSERT INTO Professors ([Name]) VALUES ('Vica L'), ('Anna H')
+INSERT INTO Lessons ([Name],ProfessorId) VALUES ('Computer Science',1)
+INSERT INTO Lessons ([Name],ProfessorId) VALUES ('Mathematics',2)
+
+-- ManyToMany
+
+CREATE TABLE Groups 
+(
+    ID INT PRIMARY KEY,
+    [Name] VARCHAR(30) 
+)
+
+CREATE TABLE Instructors 
+(
+    ID INT PRIMARY KEY,
+    [Name] VARCHAR(30)
+)
+
+CREATE TABLE GroupInstructor (
+    GroupID INT,
+    InstructorID INT,
+    PRIMARY KEY (GroupID, InstructorID),
+    FOREIGN KEY (GroupID) REFERENCES Groups(ID),
+    FOREIGN KEY (InstructorID) REFERENCES Instructors(ID)
+)
+
+INSERT INTO Groups (ID, [Name])
+VALUES 
+    (1, 'Group A'),
+    (2, 'Group B'),
+    (3, 'Group C')
+
+INSERT INTO Instructors (ID, [Name])
+VALUES 
+    (1, 'Arz Fa'),
+    (2, 'Roya Nuri'),
+    (3, 'Mike Lee')
+
+INSERT INTO GroupInstructor (GroupID, InstructorID)
+VALUES 
+    (1, 1),
+    (1, 2),
+    (2, 2),
+    (3, 3)
